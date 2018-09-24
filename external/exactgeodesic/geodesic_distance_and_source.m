@@ -7,7 +7,7 @@ function [source_id, distance] = geodesic_best_source(algorithm, destination)
 global geodesic_library;
 
 if nargin == 2
-    d = geodesic_convert_surface_points({destination});
+    d = geodesic_convert_surface_points(destination);
 
     tmp = 1;
     [source_id, tmp1, distance] = calllib(geodesic_library, 'distance_and_source', algorithm.id, d, tmp);

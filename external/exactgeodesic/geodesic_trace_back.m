@@ -2,7 +2,10 @@ function path = geodesic_trace_back(algorithm, destination)
 
 global geodesic_library;
 
-tmp{1} = destination;
+% tmp{1} = destination;
+
+tmp = destination;
+
 d = geodesic_convert_surface_points(tmp);
 
 tmp = libpointer('doublePtrPtr');
