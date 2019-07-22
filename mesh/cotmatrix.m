@@ -65,7 +65,7 @@ function L = cotmatrix(V,F)
         % dblA  = norm(n,2);
 
         % This does correct l2 norm of rows
-        dblA = (sqrt(sum((n').^2)))';
+        dblA = (sqrt(sum((n').^2)))' + eps;
     else 
         error('unsupported vertex dimension %d', size(V,2))
     end
