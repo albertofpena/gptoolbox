@@ -3,12 +3,21 @@ set(CMAKE_BUILD_TYPE_INIT Release)
 project(gptoolbox_mex)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+# templated lambdas
+set( CMAKE_CXX_STANDARD 14 )
+set( CMAKE_CXX_STANDARD_REQUIRED ON )
 
 # Move output to this dir (gptoolbox/mex)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 
+# https://stackoverflow.com/q/46724267/148668
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-march=native" COMPILER_SUPPORTS_MARCH_NATIVE)
+if(COMPILER_SUPPORTS_MARCH_NATIVE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+endif()
 
 # From libigl/cmake/libigl.cmake libigl/cmake/LibiglWindows.cmake
 if(MSVC)
@@ -42,6 +51,8 @@ include(gptoolbox_download_project)
 # libigl
 option(LIBIGL_WITH_CGAL             "Use CGAL"           ON)
 option(LIBIGL_WITH_EMBREE           "Use Embree"         ON)
+# just to get it to download tetgen
+option(LIBIGL_WITH_TETGEN           "Use Tegen"          ON)
 option(LIBIGL_WITH_MATLAB           "Use Matlab"         ON)
 option(LIBIGL_WITH_XML              "Use XML"            ON)
 option(WITH_ELTOPO                  "Use El Topo"        ON)
@@ -105,10 +116,15 @@ list(APPEND CORE_LIBS ${Matlab_LIBRARIES})
 add_definitions("-DMEX")
 compile_each("\
 aabb.cpp;\
+angle_derivatives.cpp;\
 bone_visible.cpp;\
 collapse_small_triangles.cpp;\
 decimate_libigl.cpp;\
+dual_laplacian.cpp;\
+fast_sparse.cpp;\
 fit_rotations_mex.cpp;\
+fit_cubic_bezier.cpp;\
+icp.cpp;\
 in_element_aabb.cpp;\
 readMSH.cpp;\
 read_triangle_mesh.cpp;\
@@ -171,6 +187,7 @@ selfintersect.cpp;\
 signed_distance_isosurface.cpp;\
 snap_rounding.cpp;\
 trim_with_solid.cpp;\
+upper_envelope.cpp;\
 wire_mesh.cpp;\
 "
     "${CORE_LIBS};igl::core;igl::matlab;igl::cgal;${CORK_LIBS}")
